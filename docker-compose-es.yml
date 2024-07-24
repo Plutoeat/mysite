@@ -42,7 +42,7 @@ services:
       - ./collectedstatic:/app/collectedstatic
       - ./uploads:/app/uploads
     environment:
-      - MYSQL_DATABASE=djangoblog
+      - MYSQL_DATABASE=xblog
       - MYSQL_USER_NAME=root
       - MYSQL_PASSWORD=XBlOg!2!a@d#E
       - MYSQL_HOST=db
