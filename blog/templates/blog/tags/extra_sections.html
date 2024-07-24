@@ -1,0 +1,10 @@
+{% load blog_tags %}
+{% if extra_sections %}
+    {% for extra_section in extra_sections %}
+        <section class="w-full py-[90px] {{ forloop.counter|section_color_class }}">
+            <div class="flex flex-col container mx-auto gap-y-[48px] px-4 sm:px-0">
+                {{ extra_section.content|custom_markdown|safe }}
+            </div>
+        </section>
+    {% endfor %}
+{% endif %}

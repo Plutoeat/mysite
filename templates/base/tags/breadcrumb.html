@@ -1,0 +1,22 @@
+<nav aria-label="Breadcrumbs" role="navigation">
+    <ol class="flex items-center whitespace-nowrap" typeof="BreadcrumbList">
+        {% for breadcrumb in breadcrumbs %}
+            {% if forloop.last %}
+                <li class="inline-flex items-center text-sm font-semibold text-gray-800 truncate dark:text-neutral-200"
+                    typeof="ListItem" aria-current="page">
+                    <span property="name">{{ breadcrumb.0 }}</span>
+                    <meta itemprop="position" content="{{ forloop.counter }}"/>
+                </li>
+            {% else %}
+                <li class="inline-flex items-center" typeof="ListItem">
+                    <a class="flex items-center{% if breadcrumb.1 %}{% else %} opacity-50 pointer-events-none{% endif %} text-sm text-gray-500 hover:text-indigo-600 focus:outline-none focus:text-indigo-600 dark:text-neutral-500 dark:hover:text-indigo-500 dark:focus:text-indigo-500"
+                       href="{% if breadcrumb.1 %}{{ breadcrumb.1 }}{% else %}#{% endif %}">
+                        <span property="name">{{ breadcrumb.0 }}</span>
+                        <meta itemprop="position" content="{{ forloop.counter }}"/>
+                    </a>
+                    <span class="material-symbols-outlined flex-shrink-0 mx-2 overflow-visible size-6 text-gray-400 dark:text-neutral-600">chevron_right</span>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ol>
+</nav>

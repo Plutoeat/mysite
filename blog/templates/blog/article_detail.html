@@ -1,0 +1,218 @@
+{% extends 'base/layout.html' %}
+{% load blog_tags %}
+{% load compress %}
+{% load static %}
+{% load accounts_tags %}
+
+{% block header %}
+    <!-- 该网页规范版本 -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <meta name="description" content="{{ article.body|custom_markdown|striptags|truncatewords:10 }}"/>
+    {% if article.tags %}
+        <meta name="keywords" content="{{ article.tags.all|join:"," }}"/>
+    {% else %}
+        <meta name="keywords" content="{{ SITE_KEYWORDS }}"/>
+    {% endif %}
+    <meta property="og:type" content="article"/>
+    <meta property="og:title" content="{{ article.title }}"/>
+    <meta property="og:description" content="{{ article.body|custom_markdown|striptags|truncatewords:10 }}"/>
+    <meta property="og:locale" content="zh-CN"/>
+    <meta property="og:url" content="{{ article.get_full_url }}"/>
+    {% if article.cover %}
+        <meta property="og:image" content="{{ SITE_BASE_URL|strip_str:'/' }}{{ article.cover.url }}"/>
+    {% else %}
+        <meta property="og:image" content="{{ SITE_BASE_URL }}static/base/image/logo-img.png"/>
+    {% endif %}
+    <meta property="og:site_name" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:title" content="{{ article.title }}"/>
+    <meta property="twitter:description" content="{{ article.body|custom_markdown|striptags|truncatewords:10 }}"/>
+    <meta property="twitter:site" content="{{ SITE_NAME }}"/>
+    {% if article.cover %}
+        <meta property="twitter:image" content="{{ SITE_BASE_URL|strip_str:'/' }}{{ article.cover.url }}"/>
+    {% else %}
+        <meta property="twitter:image" content="{{ SITE_BASE_URL }}static/base/image/logo-img.png"/>
+    {% endif %}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="article:created_time" content="{% dateformat article.created_time %}">
+    <meta property="article:modified_time" content="{% dateformat article.last_mod_time %}">
+    <meta property="article:author" content="{{ article.author.get_full_url }}">
+    <meta property="article:section" content="{{ article.category.name }}">
+    {% for tag in article.tags.all %}
+        <meta property="article:tag" content="{{ tag.name }}">
+    {% endfor %}
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <link href="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/contrib/auto-render.min.js"></script>
+    {% compress css %}
+        <link rel="stylesheet" href="{% static 'blog/css/markdown.css' %}">
+        <link rel="stylesheet" href="{% static 'blog/css/detail.css' %}">
+    {% endcompress %}
+{% endblock %}
+
+{% block title %}
+    <title>{{ article.title }}|{{ SITE_DESCRIPTION }}</title>
+{% endblock %}
+
+{% block content %}
+    {% if article.show_toc %}
+        <button id="tocButton"
+                class="lg:hidden fixed bottom-4 right-4 bg-indigo-500 text-white rounded-full p-4 shadow-lg">
+            目录
+        </button>
+        <div id="tocDrawer" class="fixed inset-0 hidden z-[999999]">
+            <div class="absolute right-0 top-[60px] w-2/4 h-full bg-gray-200 dark:bg-neutral-800 shadow-lg p-4">
+                {% get_markdown_toc article.body as toc %}
+                <h2 class="text-xl font-bold mb-4 dark:text-white">目录:</h2>
+                {{ toc|safe }}
+            </div>
+        </div>
+    {% endif %}
+    <section class="w-full dark:bg-black">
+        <div class="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto">
+            <div class="grid lg:grid-cols-3 gap-y-8 lg:gap-y-0 lg:gap-x-6">
+                <!-- Content -->
+                <div class="lg:col-span-2 dark:bg-black">
+                    <div class="py-8 lg:pe-8">
+                        <div class="space-y-5 lg:space-y-8">
+                            <a class="inline-flex items-center gap-x-1.5 text-sm text-gray-600 decoration-2 hover:underline dark:text-indigo-500"
+                               href="{% url 'blog:home' %}">
+                                <svg class="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24"
+                                     height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="m15 18-6-6 6-6"/>
+                                </svg>
+                                返回首页
+                            </a>
+
+                            <h2 class="text-3xl font-bold lg:text-5xl dark:text-white">{{ article.title }}</h2>
+
+                            <div class="flex items-center gap-x-5">
+                                <a class="inline-flex items-center gap-1.5 py-1 px-3 sm:py-2 sm:px-4 rounded-full text-xs sm:text-sm bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-neutral-800 dark:hover:bg-neutral-800 dark:text-neutral-200"
+                                   href="{{ article.category.get_absolute_url }}">
+                                    {{ article.category }}
+                                </a>
+                                <p class="text-xs sm:text-sm text-gray-800 dark:text-neutral-200">{{ article.created_time|date }}</p>
+                            </div>
+
+                            {{ article.body|custom_markdown|escape }}
+
+                            <div class="grid lg:flex lg:justify-between lg:items-center gap-y-5 lg:gap-y-0">
+                                <!-- Badges/Tags -->
+                                <div>
+                                    {% for tag in object.tags.all %}
+                                        <a class="m-0.5 inline-flex items-center gap-1.5 py-2 px-3 rounded-full text-sm bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200"
+                                           href="{% url 'blog:tag_detail' tag.slug %}">
+                                            {{ tag.name }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                                <!-- End Badges/Tags -->
+                            </div>
+                            {% if article.comment_status == "open" and OPEN_SITE_COMMENT %}
+                                <div id="comments"
+                                     class="border-b border-gray-200 pb-8 mb-8 dark:border-neutral-700">
+                                    {% if user.is_authenticated %}
+                                        {% include 'comments/comments.html' %}
+                                    {% else %}
+                                        <h2 class="text-sm font-medium mb-4 text-gray-400 dark:text-gray-600">
+                                            请先
+                                            <a class="text-primary decoration-2 font-medium hover:underline"
+                                               href="{% url 'accounts:login' %}?next={{ request.get_full_path }}"
+                                               rel="nofollow">登录</a>
+                                            后再评论
+                                        </h2>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <!-- End Content -->
+
+                <!-- Sidebar -->
+                <div class="lg:col-span-1 lg:w-full lg:h-full lg:bg-gradient-to-r lg:from-gray-50 lg:via-transparent lg:to-transparent dark:from-neutral-800">
+                    <div class="sticky top-0 start-0 py-8 lg:ps-8" style="top: 60px;">
+                        <!-- Avatar Media -->
+                        <div class="group flex items-center gap-x-3 border-b border-gray-200 pb-8 mb-8 dark:border-neutral-700">
+                            <a class="block flex-shrink-0" href="{% url 'blog:author_detail' article.author %}">
+                                <img class="size-10 rounded-full" src="{% load_user_avatar article.author %}"
+                                     alt="User Avatar">
+                            </a>
+
+                            <a class="group grow block" href="{% url 'blog:author_detail' article.author %}">
+                                <h5 class="group-hover:text-gray-600 text-sm font-semibold text-gray-800 dark:group-hover:text-neutral-400 dark:text-neutral-200">
+                                    {{ article.author }}
+                                </h5>
+                                <p class="text-sm text-gray-500 dark:text-neutral-500">
+                                    {% if article.author.is_superuser %}admin{% endif %}
+                                </p>
+                            </a>
+                        </div>
+                        <!-- End Avatar Media -->
+
+                        {% if article.show_toc %}
+                            <div class="hidden lg:block p-4 dark:bg-neutral-800 border-b border-gray-200 pb-8 mb-8 dark:border-neutral-700">
+                                {% get_markdown_toc article.body as toc %}
+                                <h2 class="text-xl font-bold mb-4 dark:text-white">目录:</h2>
+                                {{ toc|safe }}
+                            </div>
+                        {% endif %}
+
+                        <div class="space-y-6 border-b border-gray-200 pb-8 mb-8 dark:border-neutral-700">
+                            <!-- Media -->
+                            {% if next_article %}
+                                <a class="group flex items-center gap-x-6" href="{{ next_article.get_full_url }}">
+                                    <div class="flex-shrink-0 relative rounded-lg overflow-hidden size-20">
+                                        <img class="size-full absolute top-0 start-0 object-cover rounded-lg" src="
+                                                
+                                                    
+                                                {% if next_article.cover %}{{ next_article.cover.url }}{% else %}/static/base/image/cover.png{% endif %}"
+                                             alt="Article Cover">
+                                    </div>
+
+                                    <div class="grow">
+                                        <span class="text-sm font-bold text-gray-800 group-hover:text-indigo-600 dark:text-neutral-200 dark:group-hover:text-indigo-500">
+                                            {{ next_article.title }}
+                                        </span>
+                                    </div>
+                                </a>
+                            {% endif %}
+                            <!-- End Media -->
+
+                            <!-- Media -->
+                            {% if previous_article %}
+                                <a class="group flex items-center gap-x-6"
+                                   href="{{ previous_article.get_full_url }}">
+                                    <div class="flex-shrink-0 relative rounded-lg overflow-hidden size-20">
+                                        <img class="size-full absolute top-0 start-0 object-cover rounded-lg" src="
+                                                
+                                                    
+                                                {% if previous_article.cover %}{{ previous_article.cover.url }}{% else %}/static/base/image/cover.png{% endif %}"
+                                             alt="Article Cover">
+                                    </div>
+
+                                    <div class="grow">
+                                        <span class="text-sm font-bold text-gray-800 group-hover:text-indigo-600 dark:text-neutral-200 dark:group-hover:text-indigo-500">
+                                            {{ previous_article.title }}
+                                        </span>
+                                    </div>
+                                </a>
+                            {% endif %}
+                            <!-- End Media -->
+                        </div>
+                    </div>
+                </div>
+                <!-- End Sidebar -->
+            </div>
+        </div>
+    </section>
+    {% if article.show_toc %}
+        {% compress js %}
+            <script src="{% static 'blog/js/toc.js' %}"></script>
+            <script src="{% static 'comments/js/comments.js' %}"></script>
+        {% endcompress %}
+    {% endif %}
+{% endblock %}

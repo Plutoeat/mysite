@@ -1,0 +1,77 @@
+{% extends 'base/layout.html' %}
+{% load blog_tags %}
+{% block header %}
+    <!-- 该网页规范版本 -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <meta name="description" content="{{ SITE_SEO_DESCRIPTION }}"/>
+    <meta name="keywords" content="{{ SITE_KEYWORDS }}"/>
+    <meta property="og:type" content="blog"/>
+    <meta property="og:title" content="{{ SITE_NAME }}"/>
+    <meta property="og:description" content="{{ SITE_DESCRIPTION }}"/>
+    <meta property="og:locale" content="zh-CN"/>
+    <meta property="og:url" content="{{ SITE_BASE_URL }}"/>
+    <meta property="og:image" content="{{ SITE_BASE_URL }}static/base/image/logo-img.png"/>
+    <meta property="og:site_name" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:title" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:description" content="{{ SITE_DESCRIPTION }}"/>
+    <meta property="twitter:site" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:image" content="{{ SITE_BASE_URL }}static/base/image/logo-img.png"/>
+    <meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+
+{% block title %}
+    {% if tag_name %}
+        <title>{{ page_type }}:{{ tag_name }} | {{ SITE_DESCRIPTION }}</title>
+    {% else %}
+        <title>{{ SITE_NAME }} | {{ SITE_DESCRIPTION }}</title>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <main class="w-full" id="main" role="main">
+        <section class="w-full py-[90px] bg-white dark:bg-black">
+            <div class="flex flex-col container mx-auto gap-y-[48px] px-4 sm:px-0">
+                {% if query %}
+                    {% if suggestion %}
+                        <h3 class="text-xl md:text-2xl text-black dark:text-white font-medium">已显示<span
+                                class="text-indigo-600">{{ suggestion }}</span>的搜索结果。&nbsp;&nbsp;仍然搜索：<a
+                                class="text-indigo-600 hover:underline"
+                                href="{% url 'blog:search' %}?q={{ query }}&is_suggest=no">{{ query }}</a><br></h3>
+                    {% else %}
+                        <h3 class="text-xl md:text-2xl text-black dark:text-white font-medium">搜索：<span
+                                class="text-indigo-600">{{ query }} </span> &nbsp;&nbsp;</h3>
+                    {% endif %}
+                {% endif %}
+                {% if query and page.object_list %}
+                    {% load_search_article_list page.object_list %}
+                    {% if page.has_previous or page.has_next %}
+                        <nav role="navigation" class="max-w-80 w-full flex mx-auto relative items-center">
+                            {% if page.has_previous %}
+                                <a href="?q={{ query }}&amp;page={{ page.previous_page_number }}"
+                                   class="flex justify-center items-center size-[44px] rounded-full text-sm md:text-base bg-neutral-100 dark:bg-neutral-900 font-semibold text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300">
+                                    <span class="material-symbols-outlined">chevron_left</span>
+                                </a>
+                            {% endif %}
+                            <div class="flex-grow flex-shrink-0 basis-[1px] text-center text-base font-semibold text-black dark:text-white">
+                                文章导航
+                            </div>
+                            {% if page.has_next %}
+                                <a href="?q={{ query }}&amp;page={{ page.next_page_number }}"
+                                   class="flex justify-center items-center size-[44px] rounded-full text-sm md:text-base bg-neutral-100 dark:bg-neutral-900 font-semibold text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300">
+                                <span class="material-symbols-outlined">chevron_right</span>
+                            {% endif %}
+                            </a>
+                        </nav>
+                    {% endif %}
+                    {% if is_paginated %}
+                        {% load_pagination paginator page_obj page_type tag_name %}
+                    {% endif %}
+                {% else %}
+                    <h3 class="text-xl md:text-2xl text-black dark:text-white font-medium">哎呀，关键字：<span
+                            class="text-indigo-600">{{ query }} </span> 没有找到结果，要不换个词再试试？</h3>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+{% endblock %}

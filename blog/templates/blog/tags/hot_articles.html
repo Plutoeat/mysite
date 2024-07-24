@@ -1,0 +1,51 @@
+<section class="w-full py-[90px] bg-white dark:bg-black">
+    <div class="flex flex-col container mx-auto gap-y-[48px] px-4 sm:px-0">
+        <h3 class="text-xl md:text-2xl text-black dark:text-white font-medium" style="text-align: center;">
+            最多浏览
+        </h3>
+        <ul class="grid grid-cols-6 gap-[48px]" role="list">
+            {% for article in article_list %}
+                {% if forloop.counter0 == 0 %}
+
+                    <li class="col-span-6 bg-white dark:bg-gray-800 w-full border border-transparent rounded-2xl overflow-hidden"
+                        role="listitem">
+                        <div class="relative w-full h-full">
+                            <div class="w-full h-full min-h-[380px]">
+                                <img class="w-full h-full object-cover" src="{% if article.cover %}{{ article.cover.url }}{% else %}/static/base/image/cover.png{% endif %}" alt="cover">
+                            </div>
+                            <div
+                                    class="absolute bottom-0 w-full px-4 py-4 sm:px-6 sm:py-6 md:px-8 md:py-8 flex flex-col space-y-6 justify-between">
+                                <div class="flex flex-col space-y-6">
+                                    <a href="{{ article.category.get_absolute_url }}" rel="bookmark"
+                                       class="text-sm md:text-base text-white hover:text-neutral-300">{{ article.category.name }}</a>
+                                    <a href="{% url 'blog:detailBySlug' article.slug %}" rel="bookmark"
+                                       class="text-xl md:text-2xl font-semibold text-white hover:text-neutral-300">{{ article.title }}</a>
+                                </div>
+                                <span class="text-sm md:text-base text-white">{{ article.views }}次浏览</span>
+                            </div>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="col-span-6 md:col-span-3 lg:col-span-2 bg-white dark:bg-gray-800 w-full border border-transparent rounded-2xl overflow-hidden"
+                        role="listitem">
+                        <div class="relative w-full h-full">
+                            <div class="w-full h-full min-h-[380px]">
+                                <img class="w-full h-full object-cover" src="{% if article.cover %}{{ article.cover.url }}{% else %}/static/base/image/cover.png{% endif %}" alt="cover">
+                            </div>
+                            <div
+                                    class="absolute bottom-0 w-full px-4 py-4 sm:px-6 sm:py-6 md:px-8 md:py-8 flex flex-col space-y-6 justify-between">
+                                <div class="flex flex-col space-y-6">
+                                    <a href="{{ article.category.get_absolute_url }}" rel="bookmark"
+                                       class="text-sm md:text-base text-white hover:text-neutral-300">{{ article.category.name }}</a>
+                                    <a href="{% url 'blog:detailBySlug' article.slug %}" rel="bookmark"
+                                       class="text-xl md:text-2xl font-semibold text-white hover:text-neutral-300">{{ article.title }}</a>
+                                </div>
+                                <span class="text-sm md:text-base text-white">{{ article.views }}次浏览</span>
+                            </div>
+                        </div>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+</section>

@@ -1,0 +1,10 @@
+<div>
+    {% if active_page == tag.get_absolute_url %}
+    	<a href="{{ tag.get_absolute_url }}"
+        class="relative inline-block text-black before:absolute before:bottom-0 before:start-0 before:w-full before:h-1 before:bg-indigo-400 dark:text-white"
+        aria-current="page">{% if tag.icon %}{{ tag.icon|safe }}{% endif %}{{ tag.name }}</a>
+        {% else %}
+        <a href="{{ tag.get_absolute_url }}"
+        class="inline-block text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300">{% if tag.icon %}{{ tag.icon|safe }}{% endif %}{{ tag.name }}</a>
+    {% endif %} 
+</div>

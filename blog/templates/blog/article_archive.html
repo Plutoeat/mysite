@@ -1,0 +1,44 @@
+{% extends 'base/layout.html' %}
+{% load blog_tags %}
+{% load cache %}
+{% block header %}
+    <!-- 该网页规范版本 -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <meta name="description" content="{{ SITE_SEO_DESCRIPTION }}"/>
+    <meta name="keywords" content="{{ SITE_KEYWORDS }}"/>
+    <meta property="og:type" content="blog"/>
+    <meta property="og:title" content="{{ SITE_NAME }}"/>
+    <meta property="og:description" content="{{ SITE_DESCRIPTION }}"/>
+    <meta property="og:locale" content="zh-CN"/>
+    <meta property="og:url" content="{{ SITE_BASE_URL }}"/>
+    <meta property="og:image" content="{{ SITE_BASE_URL }}static/base/image/logo-img.png"/>
+    <meta property="og:site_name" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:title" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:description" content="{{ SITE_DESCRIPTION }}"/>
+    <meta property="twitter:site" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:image" content="{{ SITE_BASE_URL }}static/base/image/logo-img.png"/>
+    <meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+
+{% block title %}
+    <title>文章归档 | {{ SITE_DESCRIPTION }}</title>
+{% endblock %}
+
+{% block content %}
+    <main class="w-full" id="main" role="main">
+        <section class="w-full py-[90px] bg-white dark:bg-black">
+            <div class="flex flex-col container mx-auto gap-y-[48px] px-4 sm:px-0">
+                {% regroup article_list by created_time.year as year_post_group %}
+                {% for year in year_post_group %}
+                	<h3 class="text-xl md:text-2xl text-black dark:text-white font-medium">{{ year.grouper }}年</h3>
+                    {% regroup year.list by created_time.month as month_post_group %}
+                    {% for month in month_post_group %}
+                    	<h3 class="text-xl md:text-2xl text-black dark:text-white font-medium">{{ month.grouper }}月</h3>
+                        {% load_article_list month.list %}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+{% endblock %}

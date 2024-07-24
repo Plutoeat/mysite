@@ -1,0 +1,1 @@
+document.addEventListener("DOMContentLoaded",function(){const tocButton=document.getElementById('tocButton');const tocDrawer=document.getElementById('tocDrawer');tocButton.addEventListener('click',()=>{tocDrawer.classList.toggle('hidden');});tocDrawer.addEventListener('click',()=>{tocDrawer.classList.add('hidden');});};

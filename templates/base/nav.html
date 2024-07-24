@@ -1,0 +1,119 @@
+<nav id="x-local-nav" lang="zh-CN" role="navigation" aria-label="Blog Navigation"
+     class="relative container flex flex-wrap md:grid md:grid-cols-12 basis-full items-center mx-auto px-4 sm:px-0">
+    <div class="md:col-span-3 justify-self-start">
+        <!-- logo -->
+        <a href="{% url 'blog:home' %}" aria-label="X Blog"
+           class="flex justify-center items-center gap-x-2 text-black dark:text-white rounded-xl text-2xl font-semibold focus:outline-none focus:opacity-80">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                 class="inline-block dark:hidden">
+                <path d="M4 4L10 10" stroke="black" stroke-linecap="round"/>
+                <path d="M4 20L10 14" stroke="black" stroke-linecap="round"/>
+                <path d="M20 20L14 14" stroke="black" stroke-linecap="round"/>
+                <path d="M20 4L14 10" stroke="black" stroke-linecap="round"/>
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12C10 13.1046 10.8954 14 12 14ZM12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z"
+                      fill="black"/>
+                <path d="M6 12H9H10.5M18 12H15H13.5" stroke="black" stroke-linecap="round"/>
+                <path d="M12 6V9V10.5M12 18V15V13.5" stroke="black" stroke-linecap="round"/>
+            </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                 class="hidden dark:inline-block">
+                <path d="M4 4L10 10" stroke="white" stroke-linecap="round"/>
+                <path d="M4 20L10 14" stroke="white" stroke-linecap="round"/>
+                <path d="M20 20L14 14" stroke="white" stroke-linecap="round"/>
+                <path d="M20 4L14 10" stroke="white" stroke-linecap="round"/>
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12C10 13.1046 10.8954 14 12 14ZM12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z"
+                      fill="white"/>
+                <path d="M6 12H9H10.5M18 12H15H13.5" stroke="white" stroke-linecap="round"/>
+                <path d="M12 6V9V10.5M12 18V15V13.5" stroke="white" stroke-linecap="round"/>
+            </svg>
+            <span>X Blog</span>
+        </a>
+        <!-- end logo -->
+    </div>
+
+    <!-- Button Group -->
+    <div class="flex items-center gap-x-2 ms-auto md:ps-6 md:order-3 md:col-span-3">
+        <button type="button" onclick="selectTheme();"
+                class="py-2 px-2 inline-flex items-center gap-x-2 text-sm font-medium rounded-xl border border-gray-200 text-black hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-neutral-700 dark:hover:bg-white/10 dark:text-white dark:hover:text-white">
+            <span class="material-symbols-outlined" aria-label="light-mode">light_mode</span>
+            <span class="material-symbols-outlined" aria-label="dark-mode">dark_mode</span>
+        </button>
+
+        {% if request.user.is_authenticated %}
+            <button type="button" onclick="window.location.href=this.querySelector('a').href"
+                    class="justify-center items-center object-cover overflow-hidden rounded-full border border-gray-200 dark:border-neutral-700 w-[42px] h-[42px]">
+                <a href="{% url 'accounts:profile' %}"><img src="{% load accounts_tags %}{% load_user_avatar request.user %}" alt="默认头像" class="w-full h-full"/></a>
+            </button>
+        {% else %}
+            <button type="button" onclick="window.location.href=this.querySelector('a').href"
+                    class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-xl border border-transparent bg-indigo-400 text-white hover:bg-indigo-500 transition disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-indigo-500">
+                <a href="{% url 'accounts:login' %}{% if request.path == '/' %}{% else %}?next={{ request.path }}{% endif %}">登录</a>
+            </button>
+        {% endif %}
+
+        <div class="md:hidden">
+            <button type="button"
+                    class="size-[38px] flex justify-center items-center text-sm font-semibold rounded-xl border border-gray-200 text-black hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:border-neutral-700 dark:hover:bg-neutral-700"
+                    data-x-collapse="#navbar-collapse-with-animation"
+                    aria-controls="navbar-collapse-with-animation" aria-label="Toggle navigation">
+                <span class="material-symbols-outlined x-collapse-icon">menu</span>
+                <span class="material-symbols-outlined x-collapse-icon hidden">close</span>
+            </button>
+        </div>
+    </div>
+    <!-- End Button Group -->
+
+    <!-- Collapse -->
+    <div id="navbar-collapse-with-animation"
+         class="x-collapse hidden opacity-0 md:opacity-100 overflow-hidden transition-all duration-300 basis-full grow md:block md:w-auto md:basis-auto md:order-2 md:col-span-6">
+        <ul role="menu"
+            class="flex flex-col gap-y-4 gap-x-0 mt-5 md:flex-row md:justify-center md:items-center md:gap-y-0 md:gap-x-7 md:mt-0">
+            <li role="menuitem">
+                {% if active_page == 'home' %}
+                    <a href="{% url 'blog:home' %}"
+                       class="relative inline-block text-black before:absolute before:bottom-0 before:start-0 before:w-full before:h-1 before:bg-indigo-400 dark:text-white"
+                       aria-current="page">首页</a>
+                {% else %}
+                    <a class="inline-block text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300"
+                       href="{% url 'blog:home' %}">首页</a>
+                {% endif %}
+            </li>
+            <li>
+                <div>
+                    <button type="button"
+                            class="flex justify-center items-center text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300"
+                            data-x-collapse="#category-collapse-with-animation"
+                            aria-controls="category-collapse-with-animation" aria-label="Toggle category">
+                        <span>分类</span>
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+            </li>
+            <li>
+                <button type="button"
+                        class="flex justify-center items-center text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300"
+                        data-x-collapse="#tag-collapse-with-animation"
+                        aria-controls="tag-collapse-with-animation" aria-label="Toggle tags">
+                    <span>标签</span>
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+            </li>
+            <li>
+                <a class="inline-block text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300"
+                   href="{% url 'blog:archive' %}">归档</a>
+            </li>
+            <li>
+                <button type="button"
+                        class="flex justify-center items-center text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300"
+                        data-x-collapse="#search-collapse-with-animation"
+                        aria-controls="search-collapse-with-animation" aria-label="Toggle search section">
+                    <span>搜索</span>
+                    <span class="material-symbols-outlined">expand_more</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+    <!-- End Collapse -->
+</nav>

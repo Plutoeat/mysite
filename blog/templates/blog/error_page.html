@@ -1,0 +1,58 @@
+{% extends 'base/layout.html' %}
+{% load static %}
+{% load compress %}
+{% block header %}
+    <!-- 该网页规范版本 -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <meta name="description" content="{{ SITE_SEO_DESCRIPTION }}"/>
+    <meta name="keywords" content="{{ SITE_KEYWORDS }}"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="{{ SITE_NAME }}"/>
+    <meta property="og:description" content="{{ SITE_DESCRIPTION }}"/>
+    <meta property="og:locale" content="zh-CN"/>
+    <meta property="og:url" content="{{ SITE_BASE_URL }}"/>
+    <meta property="og:image" content="{{ SITE_BASE_URL }}static/base/image/logo-img.png"/>
+    <meta property="og:site_name" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:title" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:description" content="{{ SITE_DESCRIPTION }}"/>
+    <meta property="twitter:site" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:image" content="{{ SITE_BASE_URL }}static/base/image/logo-img.png"/>
+    <meta name="twitter:card" content="summary_large_image">
+    {% compress css %}
+        <link rel="stylesheet" href="{% static 'blog/css/errorpage.css' %}">
+    {% endcompress %}
+{% endblock %}
+
+{% block title %}
+    {% if tag_name %}
+        {% if status_code == '404' %}
+            <title>404 NotFound</title>
+        {% elif status_code == '403' %}
+            <title>Permission Denied</title>
+        {% elif status_code == '500' %}
+            <title>500 Error</title>
+        {% else %}
+            <title></title>
+        {% endif %}
+    {% else %}
+        <title>{{ SITE_NAME }} | {{ SITE_DESCRIPTION }}</title>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <main id="content" class="bg-white dark:bg-gray-800">
+        <div class="text-center py-10 px-4 sm:px-6 lg:px-8">
+            <h1 class="block text-7xl font-bold text-gray-800 sm:text-9xl dark:text-white">{{ status_code }}</h1>
+            <p class="mt-3 text-gray-600 dark:text-neutral-400">{{ err_title }}</p>
+            <p class="text-gray-600 dark:text-neutral-400">{{ err_message}}</p>
+            <div class="mt-5 flex flex-col justify-center items-center gap-2 sm:flex-row sm:gap-3">
+                <a class="w-full sm:w-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700"
+                   href="{% url 'blog:home' %}">
+                    <span class="material-symbols-outlined flex-shrink-0 size-6">chevron_left</span>
+                    <span>返回首页</span>
+                </a>
+            </div>
+        </div>
+    </main>
+{% endblock %}

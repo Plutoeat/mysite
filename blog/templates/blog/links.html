@@ -1,0 +1,183 @@
+{% extends 'base/layout.html' %}
+{% load cache %}
+{% load static %}
+{% load compress %}
+
+{% block header %}
+    <!-- 该网页规范版本 -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <meta name="description" content="{{ SITE_SEO_DESCRIPTION }}"/>
+    <meta name="keywords" content="{{ SITE_KEYWORDS }}"/>
+    <meta property="og:type" content="blog"/>
+    <meta property="og:title" content="{{ SITE_NAME }}"/>
+    <meta property="og:description" content="{{ SITE_DESCRIPTION }}"/>
+    <meta property="og:locale" content="zh-CN"/>
+    <meta property="og:url" content="{{ SITE_BASE_URL }}"/>
+    <meta property="og:image" content="{{ SITE_BASE_URL }}static/base/image/logo-img.png"/>
+    <meta property="og:site_name" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:title" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:description" content="{{ SITE_DESCRIPTION }}"/>
+    <meta property="twitter:site" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:image" content="{{ SITE_BASE_URL }}static/base/image/logo-img.png"/>
+    <meta name="twitter:card" content="summary_large_image">
+    {% compress css %}
+        <link rel="stylesheet" href="{% static 'blog/css/links.css' %}">
+    {% endcompress %}
+{% endblock %}
+
+{% block title %}
+    <title>友情链接 | {{ SITE_DESCRIPTION }}</title>
+{% endblock %}
+
+{% block content %}
+    <main class="w-full">
+        <!-- 最近更新文章列表 -->
+        {% cache 3600 links_list %}
+            <section class="w-full py-[90px] bg-neutral-100 dark:bg-neutral-900">
+                <div class="flex flex-col container mx-auto gap-y-[48px] px-4 sm:px-0">
+                    <div class="flex justify-center items-center">
+                        <h3 class="text-xl md:text-2xl text-black dark:text-white font-medium">友情链接</h3>
+                    </div>
+                    <ul class="grid grid-cols-6 gap-[48px]" role="list">
+                        {% for object in object_list %}
+                            <li class="col-span-6 sm:col-span-3 lg:col-span-2 bg-white dark:bg-gray-800 w-full border border-transparent rounded-md overflow-hidden"
+                                role="listitem">
+                                <a href="#" class="group rounded-md overflow-hidden w-full h-full">
+                                    <div class="flex">
+                                        <div class="flex-shrink-0 relative rounded-md overflow-hidden w-32 h-32">
+                                            <img class="group-hover:scale-105 transition-transform duration-500 ease-in-out size-full absolute top-0 object-cover start-0 rounded-md"
+                                                 src="{% if object.icon %}
+                                                 {{ object.icon }}
+                                                 	{% else %}
+                                                 	/static/base/image/logo-img.png
+                                                 {% endif %}" alt="icon">
+                                        </div>
+                                        <div class="grow px-6 py-4">
+                                            <h3 class="text-sm font-semibold text-gray-800 group-hover:text-gray-600 dark:text-neutral-300 dark:group-hover:text-white">{{ object.name|slice:":30" }}</h3>
+                                            <p class="text-xs mt-2 text-gray-600 dark:text-neutral-400">{{ object.desc|slice:":100" }}</p>
+                                            <p class="text-xs mt-3 inline-flex items-center text-indigo-600 decoration-2 hover:underline font-medium">
+                                                点击前往</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </section>
+        {% endcache %}
+        {% if request.user.is_authenticated %}
+            <section class="w-full py-[90px] bg-white dark:bg-black">
+                <div class="flex flex-col container mx-auto gap-y-[48px] px-4 sm:px-0">
+                    <h3 class="text-xl md:text-2xl text-black dark:text-white font-medium" style="text-align: center;">
+                        申请友链</h3>
+                    <form action="{% url 'blog:apply_roll' %}" method="post">
+                        {% csrf_token %}
+                        <div class="px-6 py-6">
+                            <div class="w-full flex flex-col justify-center items-center space-y-12">
+                                <div class="flex flex-col w-full space-y-4 pt-12 first:pt-0 last:pb-0 border-t first:border-transparent border-gray-200 dark:border-neutral-700 dark:first:border-transparent">
+                                    <div class="text-base text-green-600 mt-2">{{ success }}</div>
+                                    <div class="text-base text-red-600 mt-2">{{ error_roll }}</div>
+                                    <div class="text-base text-red-600 mt-2">{{ form.non_field_errors }}</div>
+                                    <label for="{{ form.name.id_for_label }}"
+                                           class="inline-block text-sm font-medium dark:text-white">
+                                        网站信息
+                                    </label>
+
+                                    <input type="text" id="{{ form.name.id_for_label }}" name="{{ form.name.name }}"
+                                           class="py-2 px-3 pe-11 block w-full outline-0 border border-gray-200 shadow-sm text-sm rounded-lg focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                           placeholder="网站名称">
+                                    {% if form.name.errors %}
+                                        {% for error in form.name.errors %}
+                                            <p class="text-xs text-red-600 mt-2"
+                                               id="name-error">{{ error|escape }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <input type="url" name="{{ form.link.name }}"
+                                           class="py-2 px-3 pe-11 block w-full outline-0 border border-gray-200 shadow-sm text-sm rounded-lg focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                           placeholder="链接地址">
+                                    {% if form.link.errors %}
+                                        {% for error in form.link.errors %}
+                                            <p class="text-xs text-red-600 mt-2"
+                                               id="link-error">{{ error|escape }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <input type="url" name="{{ form.icon.name }}"
+                                           class="py-2 px-3 pe-11 block w-full outline-0 border border-gray-200 shadow-sm text-sm rounded-lg focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                           placeholder="网站logo，请输入图片链接，没有可不填">
+                                    {% if form.icon.errors %}
+                                        {% for error in form.icon.errors %}
+                                            <p class="text-xs text-red-600 mt-2"
+                                               id="icon-error">{{ error|escape }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <textarea name="{{ form.desc.name }}"
+                                              class="py-2 px-3 pe-11 block w-full outline-0 border border-gray-200 shadow-sm text-sm rounded-lg focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                              rows="6" placeholder="请用简短几句话描述你的网站，可不填"></textarea>
+                                    {% if form.desc.errors %}
+                                        {% for error in form.desc.errors %}
+                                            <p class="text-xs text-red-600 mt-2"
+                                               id="desc-error">{{ error|escape }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="flex flex-col w-full space-y-4 pt-12 first:pt-0 last:pb-0 border-t first:border-transparent border-gray-200 dark:border-neutral-700 dark:first:border-transparent">
+                                    <label for="{{ form.master.id_for_label }}"
+                                           class="inline-block text-sm font-medium dark:text-white">
+                                        站长信息
+                                    </label>
+
+                                    <input type="text" id="{{ form.master.id_for_label }}" name="{{ form.master.name }}"
+                                           class="py-2 px-3 pe-11 block w-full outline-0 border border-gray-200 shadow-sm text-sm rounded-lg focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                           placeholder="站长名称">
+                                    {% if form.master.errors %}
+                                        {% for error in form.master.errors %}
+                                            <p class="text-xs text-red-600 mt-2"
+                                               id="master-error">{{ error|escape }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <input type="email" name="{{ form.email.name }}"
+                                           class="py-2 px-3 pe-11 block w-full outline-0 border border-gray-200 shadow-sm text-sm rounded-lg focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                           placeholder="站长邮箱">
+                                    {% if form.email.errors %}
+                                        {% for error in form.email.errors %}
+                                            <p class="text-xs text-red-600 mt-2"
+                                               id="email-error">{{ error|escape }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="flex flex-col w-full space-y-4 pt-12 first:pt-0 last:pb-0 border-t first:border-transparent border-gray-200 dark:border-neutral-700 dark:first:border-transparent">
+                                    <label id="{{ form.show_type.id_for_label }}"
+                                           class="inline-block text-sm font-medium dark:text-white">
+                                        展示类型
+                                    </label>
+
+                                    <select id="{{ form.show_type.id_for_label }}" name="{{ form.show_type.name }}"
+                                            class="py-2 px-3 pe-9 block w-full outline-0 border border-gray-200 shadow-sm text-sm rounded-lg focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                                        {% for option in form.show_type %}
+                                            {{ option }}
+                                        {% endfor %}
+                                    </select>
+                                    {% if form.show_type.errors %}
+                                        {% for error in form.show_type.errors %}
+                                            <p class="text-xs text-red-600 mt-2"
+                                               id="show_type-error">{{ error|escape }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+
+                                <input type="hidden" name="{{ form.sequence.name }}" value="0">
+
+                                <button type="submit"
+                                        class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none">
+                                    提交申请
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        {% endif %}
+    </main>
+{% endblock %}

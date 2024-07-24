@@ -1,0 +1,13 @@
+<nav role="navigation" class="max-w-80 w-full flex mx-auto relative items-center">
+    <a href="{% if previous_url %}{{ previous_url }}{% endif %}"
+       class="
+               {% if page_obj.has_previous %}{% else %}opacity-50 pointer-events-none {% endif %}flex justify-center items-center size-[44px] rounded-full text-sm md:text-base bg-neutral-100 dark:bg-neutral-900 font-semibold text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300">
+        <span class="material-symbols-outlined">chevron_left</span>
+    </a>
+    <div class="flex-grow flex-shrink-0 basis-[1px] text-center text-base font-semibold text-black dark:text-white">{{ page_obj.number }}页{{ paginator.num_pages }}</div>
+    <a href="{% if next_url %}{{ next_url }}{% endif %}"
+       class="
+               {% if page_obj.has_next %}{% else %}opacity-50 pointer-events-none {% endif %}flex justify-center items-center size-[44px] rounded-full text-sm md:text-base bg-neutral-100 dark:bg-neutral-900 font-semibold text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300">
+        <span class="material-symbols-outlined">chevron_right</span>
+    </a>
+</nav>

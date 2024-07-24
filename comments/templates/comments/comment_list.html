@@ -1,0 +1,38 @@
+{% load accounts_tags %}
+{% load blog_tags %}
+{% load comments_tags %}
+<li class="reply text-gray-600 dark-text-gray-400 mt-4">
+    <div>
+        <span class="font-semibold">{{ cc_comment.author }}</span>回复<span
+            class="font-semibold">{{ cc_comment.parent_comment.author }}</span>:
+        <hr/>
+        {{ cc_comment.body|comment_markdown|escape }}
+    </div>
+    <div class="flex flex-col">
+        <div class="flex justify-end">
+            <button type="button" aria-label="回复给{{ cc_comment.author.nickname }}"
+                    onclick="showButton({{ cc_comment.pk }})"
+                    class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-indigo-600 hover:text-indigo-800 disabled:opacity-50 disabled:pointer-events-none dark:text-indigo-500 dark:hover:text-indigo-400">
+                回复
+            </button>
+        </div>
+        <form action="{% url 'comments:postcomment' article.pk %}" id="reply-{{ cc_comment.pk }}"
+              class="reply-form hidden" method="post">
+            {% csrf_token %}
+            <div class="w-full flex gap-x-2 justify-start items-center">
+                                <textarea type="text" name="body" id="reply-input" rows="1"
+                                          class="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                          placeholder="评论"></textarea>
+                <input type="hidden" name="parent_comment_id" id="id_parent_comment_id_{{ cc_comment.pk }}">
+                <button type="submit"
+                        class=" flex-shrink-0 flex-grow py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+                    评论
+                </button>
+            </div>
+        </form>
+    </div>
+</li>
+{% query article_comments parent_comment=cc_comment as cc_comments %}
+{% for cc_comment in cc_comments %}
+    {% include 'comments/comment_list.html' %}
+{% endfor %}

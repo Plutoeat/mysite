@@ -1,0 +1,135 @@
+{% load static %}
+{% load cache %}
+{% load compress %}
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN" dir="ltr"
+      prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <!-- title -->
+    {% block title %}
+
+    {% endblock %}
+    <!-- end title -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+          rel="stylesheet">
+    <link rel="alternate" type="application/rss+xml" title="{{ SITE_NAME }} &raquo; Feed"
+          href="{% url 'blog:feed' %}"/>
+
+    {% compress css %}
+    <link rel="stylesheet" href="{% static 'base/css/style.css' %}">
+    {% endcompress %}
+
+    <!-- header -->
+    {% block header %}
+
+    {% endblock %}
+    <!-- end header -->
+</head>
+<body>
+
+{% if GLOBAL_HEADER %}
+    {{ GLOBAL_HEADER|safe }}
+{% endif %}
+<header class="flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full py-2 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0"
+        data-sticky dir="ltr">
+    <hgroup class="hidden">
+        <h1><a href="#" title="XBlog" rel="home" dir="ltr">XBlog</a></h1>
+        <p>我的私人博客网站</p>
+    </hgroup>
+    {% include 'base/nav.html' %}
+</header>
+<div id="category-collapse-with-animation"
+     class="x-collapse hidden opacity-0 -left-1/2 transition-all duration-300 overflow-hidden z-[100] fixed w-1/2 h-full border-r border-gray-200 rounded-md shadow-md bg-white dark:border-gray-700 dark:bg-gray-800">
+    <div class="px-2 py-2 flex justify-end">
+        <button type="button"
+                class="flex justify-center items-center text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300"
+                data-x-collapse="#category-collapse-with-animation"
+                aria-controls="category-collapse-with-animation" aria-label="Toggle category">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
+    <div class="px-8 py-8">
+        <h4 class="text-2xl font-semibold text-black dark:text-white">分类</h4>
+        <ul role="list" class="mt-6">
+            {% load blog_tags %}
+            {% query category_list parent_category=None as root_category_list %}
+            {% for category in root_category_list %}
+                {% include 'base/category_node.html' %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<div id="tag-collapse-with-animation"
+     class="x-collapse hidden opacity-0 -left-1/2 transition-all duration-300 overflow-hidden z-[100] fixed w-1/2 h-full border-r border-gray-200 rounded-md shadow-md bg-white dark:border-gray-700 dark:bg-gray-800">
+    <div class="px-2 py-2 flex justify-end">
+        <button type="button"
+                class="flex justify-center items-center text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300"
+                data-x-collapse="#tag-collapse-with-animation"
+                aria-controls="tag-collapse-with-animation" aria-label="Toggle tag">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
+    <div class="px-8 py-8">
+        <h4 class="text-2xl font-semibold text-black dark:text-white">标签</h4>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 lg:grid-cols-8 mt-6">
+            {% for tag in tag_list %}
+            	{% include 'base/tag_node.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div id="search-collapse-with-animation"
+     class="x-collapse hidden opacity-0 transition-all duration-300 overflow-hidden z-[100] fixed w-full h-full border-b border-gray-200 rounded-md shadow-md bg-white dark:border-gray-700 dark:bg-gray-800">
+    <div class="px-2 py-2 flex justify-end">
+        <button type="button"
+                class="flex justify-center items-center text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300"
+                data-x-collapse="#search-collapse-with-animation"
+                aria-controls="search-collapse-with-animation" aria-label="Toggle search section">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
+    <div class="px-8 py-8 flex justify-center items-start space-x-3">
+        <form role="search" method="get" action="{% url 'blog:search' %}">
+        <div class="relative">
+            <input type="search" name="q" id="search-form-input" class="peer p-4 block w-full outline-0 border border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600
+                      focus:pt-6
+                      focus:pb-2
+                      [&:not(:placeholder-shown)]:pt-6
+                      [&:not(:placeholder-shown)]:pb-2
+                      autofill:pt-6
+                      autofill:pb-2" placeholder="请在此输入关键词">
+            <label for="search-form-input" class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none
+                        peer-focus:scale-90
+                        peer-focus:translate-x-0.5
+                        peer-focus:-translate-y-1.5
+                        peer-focus:text-gray-500 dark:peer-focus:text-neutral-500
+                        peer-[:not(:placeholder-shown)]:scale-90
+                        peer-[:not(:placeholder-shown)]:translate-x-0.5
+                        peer-[:not(:placeholder-shown)]:-translate-y-1.5
+                        peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500 dark:text-neutral-500">搜索</label>
+        </div>
+        <button type="submit" class="py-[14px] px-6 inline-flex items-center gap-x-2 text-base font-semibold rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none">
+            搜索
+        </button>
+        </form>
+    </div>
+</div>
+
+{% block content %}
+
+{% endblock %}
+
+{% include 'base/footer.html' %}
+{% compress js %}
+    <script src="{% static 'base/js/script.js' %}"></script>
+{% endcompress %}
+</body>
+</html>

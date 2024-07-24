@@ -1,0 +1,58 @@
+{% extends 'base/layout.html' %}
+{% load blog_tags %}
+{% block header %}
+    <!-- 该网页规范版本 -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <meta name="description" content="{{ SITE_SEO_DESCRIPTION }}"/>
+    <meta name="keywords" content="{{ SITE_KEYWORDS }}"/>
+    <meta property="og:type" content="blog"/>
+    <meta property="og:title" content="{{ SITE_NAME }}"/>
+    <meta property="og:description" content="{{ SITE_DESCRIPTION }}"/>
+    <meta property="og:locale" content="zh-CN"/>
+    <meta property="og:url" content="{{ SITE_BASE_URL }}"/>
+    <meta property="og:image" content="{{ SITE_BASE_URL }}static/base/image/logo-img.png"/>
+    <meta property="og:site_name" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:title" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:description" content="{{ SITE_DESCRIPTION }}"/>
+    <meta property="twitter:site" content="{{ SITE_NAME }}"/>
+    <meta property="twitter:image" content="{{ SITE_BASE_URL }}static/base/image/logo-img.png"/>
+    <meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+
+{% block title %}
+    {% if tag_name %}
+        <title>{{ page_type }}:{{ tag_name }} | {{ SITE_DESCRIPTION }}</title>
+        {% comment %}
+<meta name="description" content="{{ page_type }}:{{ tag_name }}" />{% endcomment %}
+    {% else %}
+        <title>{{ SITE_NAME }} | {{ SITE_DESCRIPTION }}</title>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <main class="w-full" id="main" role="main">
+        <!-- 最近更新文章列表 -->
+        {% if link_type == 'home' %}
+            {% load_recent_articles article_list %}
+            {% load_hot_articles %}
+            {% load_recent_comment_articles %}
+            {% load_extra_sections %}
+        {% elif link_type == 'list' %}
+            <section class="w-full py-[90px] bg-white dark:bg-black">
+                <div class="flex flex-col container mx-auto gap-y-[48px] px-4 sm:px-0">
+                    {% if page_type and tag_name %}
+                        <h3 class="text-xl md:text-2xl text-black dark:text-white font-medium">{{ page_type }}: <span
+                                class="inline text-black dark:text-white">{{ tag_name }}</span></h3>
+                    {% else %}
+                        <h3 class="text-xl md:text-2xl text-black dark:text-white font-medium">列表页</h3>
+                    {% endif %}
+                    {% load_article_list article_list %}
+                    {% if is_paginated %}
+                        {% load_pagination paginator page_obj page_type tag_name %}
+                    {% endif %}
+                </div>
+            </section>
+        {% endif %}
+    </main>
+{% endblock %}

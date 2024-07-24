@@ -1,0 +1,27 @@
+{% if recent_comments and open_site_comment %}
+    <section class="w-full py-[90px] bg-neutral-100 dark:bg-neutral-900">
+        <div class="flex flex-col container mx-auto gap-y-[48px] px-4 sm:px-0">
+            <h3 class="text-xl md:text-2xl text-black dark:text-white font-medium">最近评论</h3>
+            <ul class="grid grid-cols-2 gap-0" role="list">
+                {% for comment in recent_comments %}
+                    <li class="col-span-2 lg:col-span-1 w-full border-b border-gray-400 overflow-hidden py-4"
+                        role="listitem">
+                        <div class="flex">
+                            <div class="flex-shrink-0 flex-grow-0 overflow-hidden size-[150px] rounded-lg">
+                                <img class="w-full h-full object-cover" src="{% if comment.article.cover %}{{ comment.article.cover.url }}{% else %}/static/base/image/cover.png{% endif %}"
+                                     alt="cover">
+                            </div>
+                            <div class="px-4 py-4 flex flex-col justify-between space-y-2">
+                                <a href="{{ comment.article.category.get_absolute_url }}"
+                                   class="text-xs md:text-sm text-gray-500 hover:text-neutral-400 dark:text-gray-400 dark:hover:text-neutral-300">{{ comment.article.category.name }}</a>
+                                <a href="{{ comment.article.get_absolute_url }}#comment-{{ comment.pk }}"
+                                   class="text-sm md:text-base font-semibold text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300">{{ comment.article.title }}</a>
+                                <span class="text-xs md:text-sm text-gray-500 dark:text-gray-400">{{ comment.body }}</span>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+{% endif %}

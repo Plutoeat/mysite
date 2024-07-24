@@ -1,0 +1,13 @@
+{% if footer_links %}
+    {% for footer_link in footer_links %}
+        <li role="listitem">
+            <a class="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200"
+               href="{{ footer_link.link }}">
+                {{ footer_link.name }}
+            </a>
+            {% if footer_link.notice %}
+                <span class="inline text-indigo-600 dark:text-indigo-500">— {{ footer_link.notice }}</span>
+            {% endif %}
+        </li>
+    {% endfor %}
+{% endif %} 

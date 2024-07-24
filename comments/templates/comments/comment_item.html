@@ -1,0 +1,41 @@
+{% load accounts_tags %}
+{% load blog_tags %}
+{% load comments_tags %}
+<div class="comment-box flex p-4 gap-x-4 justify-start items-start" id="div-comment-{{ comment_item.pk }}">
+        <div class="flex-shrink-0">
+            <img class="size-10 border rounded-full" src="{% load_user_avatar comment_item.author %}" alt="avatar">
+        </div>
+        <div class="flex-col justify-start items-start flex-grow">
+            <h5 class="scroll-m-20 text-lg font-normal tracking-tight dark:text-neutral-200">{{ comment_item.author.nickname }}</h5>
+            <p class="leading-normal [&:not(:first-child)]:mt-4 text-base font-normal text-gray-600 dark:text-gray-400">
+                {{ comment_item.body|comment_markdown|escape }}
+            </p>
+            <div class="flex flex-col">
+                <div class="flex justify-end">
+                    <button type="button" aria-label="回复给{{ comment_item.author.nickname }}" onclick="showButton({{ comment_item.pk }})"
+                            class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-indigo-600 hover:text-indigo-800 disabled:opacity-50 disabled:pointer-events-none dark:text-indigo-500 dark:hover:text-indigo-400">
+                        回复
+                    </button><hr/>
+                </div>
+                <form action="{% url 'comments:postcomment' article.pk %}" id="reply-{{ comment_item.pk }}" class="reply-form hidden" method="post">
+                    {% csrf_token %}
+                    <div class="w-full flex gap-x-2 justify-start items-center">
+                        <textarea type="text" name="body" id="reply-input" rows="1"
+                               class="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                  placeholder="评论"></textarea>
+                        <input type="hidden" name="parent_comment_id" id="id_parent_comment_id_{{ comment_item.pk }}">
+                        <button type="submit"
+                                class=" flex-shrink-0 flex-grow py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+                            评论
+                        </button>
+                    </div>
+                </form>
+            </div>
+            {% query article_comments parent_comment=comment_item as cc_comments %}
+            <ol class="mt-4">
+                {% for cc_comment in cc_comments %}
+                	{% include 'comments/comment_list.html' %}
+                {% endfor %}
+            </ol>
+        </div>
+    </div>

@@ -1,0 +1,24 @@
+<div class="flex justify-between items-center">
+    <h2 class="text-xl font-bold mb-4 dark:text-white">评论</h2>
+    <h2 class="text-sm font-medium mb-4 text-gray-400 dark:text-gray-600">{{ comment_count }} 个评论</h2>
+</div>
+<div id="comment-content">
+    {% include 'comments/post_comment.html' %}
+    {% for comment_item in p_comments %}
+        {% with 0 as depth %}
+            {% include 'comments/comment_item.html' %}
+        {% endwith %}
+    {% endfor %}
+<div class="flex justify-between items-center">
+    {% if comment_previous_page_url %}
+        <div class="nav-previous">
+            <span><a class="text-primary decoration-2 font-medium hover:underline" href="{{ comment_previous_page_url }}" rel="prev"><span>←</span> 上一页</a></span>
+        </div>
+    {% endif %}
+    {% if comment_next_page_url %}
+        <div class="nav-next">
+            <span><a class="text-primary decoration-2 font-medium hover:underline" href="{{ comment_next_page_url }}" rel="next">下一页 <span>→</span></a></span>
+        </div>
+    {% endif %}
+</div>
+</div>

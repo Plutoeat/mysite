@@ -1,0 +1,22 @@
+<li role="listitem" class="ps-4">
+    {% if active_page == category.get_absolute_url %}
+        <a href="{{ category.get_absolute_url }}"
+           class="relative inline-block text-black before:absolute before:bottom-0 before:start-0 before:w-full before:h-1 before:bg-indigo-400 dark:text-white"
+           aria-current="page">{% if category.icon %}{{ category.icon|safe }}{% endif %}{{ category.name }}</a>
+    {% else %}
+        <a href="{{ category.get_absolute_url }}"
+           class="inline-block text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300">
+            {% if category.icon %}{{ category.icon|safe }}{% endif %}{{ category.name }}</a>
+    {% endif %}
+{% load blog_tags %}
+{% query category_list parent_category=category as child_category_list %}
+    {% if child_category_list %}
+        <ul role="list">
+            {% for child_category in child_category_list %}
+                {% with category=child_category template_name="base/category_node.html" %}
+                    {% include template_name %}
+                {% endwith %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>

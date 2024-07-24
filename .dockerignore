@@ -1,0 +1,10 @@
+bin/data/
+# virtualenv
+venv/
+collectedstatic/
+mysite/whoosh_index/
+media/
+settings_production.py
+*.md
+logs/
+static/
