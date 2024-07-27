@@ -16,10 +16,19 @@ from mysite import settings
 ELASTICSEARCH_ENABLED = hasattr(settings, 'ELASTICSEARCH_DSL')
 
 if ELASTICSEARCH_ENABLED:
-    connections.create_connection(alias='default', hosts=settings.ELASTICSEARCH_DSL['default']['hosts'])
+    connections.create_connection(
+        alias='default',
+        hosts=settings.ELASTICSEARCH_DSL['default']['hosts'],
+        basic_auth=(settings.ELASTICSEARCH_DSL['username'], settings.ELASTICSEARCH_DSL['password']),
+        ca_certs=settings.ELASTICSEARCH_DSL['ca_certs']
+    )
     from elasticsearch import Elasticsearch
 
-    es = Elasticsearch(hosts=settings.ELASTICSEARCH_DSL['default']['hosts'])
+    es = Elasticsearch(
+        hosts=settings.ELASTICSEARCH_DSL['default']['hosts'],
+        basic_auth=(settings.ELASTICSEARCH_DSL['username'], settings.ELASTICSEARCH_DSL['password']),
+        ca_certs=settings.ELASTICSEARCH_DSL['ca_certs']
+    )
     from elasticsearch.client import IngestClient
 
     c = IngestClient(client=es)
@@ -109,10 +118,15 @@ class ElapsedTimeDocumentManager:
     """
     ElapsedTime document Manager
     """
+
     @staticmethod
     def build_index():
         from elasticsearch import Elasticsearch
-        client = Elasticsearch(hosts=settings.ELASTICSEARCH_DSL['default']['hosts'])
+        client = Elasticsearch(
+            hosts=settings.ELASTICSEARCH_DSL['default']['hosts'],
+            basic_auth=(settings.ELASTICSEARCH_DSL['username'], settings.ELASTICSEARCH_DSL['password']),
+            ca_certs=settings.ELASTICSEARCH_DSL['ca_certs']
+        )
         res = client.indices.exists(index="performance")
         if not res:
             ElapsedTimeDocument.init()
@@ -120,7 +134,11 @@ class ElapsedTimeDocumentManager:
     @staticmethod
     def delete_index():
         from elasticsearch import Elasticsearch
-        client = Elasticsearch(hosts=settings.ELASTICSEARCH_DSL['default']['hosts'])
+        client = Elasticsearch(
+            hosts=settings.ELASTICSEARCH_DSL['default']['hosts'],
+            basic_auth=(settings.ELASTICSEARCH_DSL['username'], settings.ELASTICSEARCH_DSL['password']),
+            ca_certs=settings.ELASTICSEARCH_DSL['ca_certs']
+        )
         client.indices.delete(index='performance', ignore=[400, 404])
 
     @staticmethod
@@ -208,7 +226,11 @@ class ArticleDocumentManager:
 
     def delete_index(self):
         from elasticsearch import Elasticsearch
-        client = Elasticsearch(hosts=settings.ELASTICSEARCH_DSL['default']['hosts'])
+        client = Elasticsearch(
+            hosts=settings.ELASTICSEARCH_DSL['default']['hosts'],
+            basic_auth=(settings.ELASTICSEARCH_DSL['username'], settings.ELASTICSEARCH_DSL['password']),
+            ca_certs=settings.ELASTICSEARCH_DSL['ca_certs']
+        )
         client.indices.delete(index='blog', ignore=[400, 404])
 
     def convert_to_doc(self, articles):

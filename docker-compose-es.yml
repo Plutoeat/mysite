@@ -30,7 +30,7 @@ services:
     ports:
       - 5601:5601
     environment:
-      - ELASTICSEARCH_HOSTS=http://es:9200
+      - ELASTICSEARCH_HOSTS=https://es:9200
 
   xblog:
     build: .
@@ -39,9 +39,10 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./collectedstatic:/app/collectedstatic
+      - ./collectstatic:/app/collectstatic
       - ./uploads:/app/uploads
     environment:
+      - DJANGO_DEBUG=False
       - MYSQL_DATABASE=xblog
       - MYSQL_USER_NAME=root
       - MYSQL_PASSWORD=XBlOg!2!a@d#E

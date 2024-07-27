@@ -10,6 +10,8 @@
 
 # 更新日志 {: #update-log }
 
+2024年07月27日 - 手动部署上线
+
 2024年7月23日 - 完成项目主体功能
 
 # 资源下载 {: #resource-download }
@@ -33,4 +35,4 @@
 
 # 项目地址 {: project }
 
-占位
+[xblog](https://github.com/Plutoeat/xblog)

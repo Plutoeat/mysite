@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash
+set -e
 NAME="xblog" # Name of the application
 DJANGODIR=/app # Django project directory
 USER=root # the user to run as
@@ -8,7 +9,7 @@ NUM_WORKERS=1 # how many worker processes should Gunicorn spawn
 DJANGO_WSGI_MODULE=mysite.wsgi # WSGI module name
 
 
-echo "Starting $NAME as `whoami`"
+#echo "Starting $NAME as `whoami`"
 
 # Activate the virtual environment
 cd $DJANGODIR

@@ -26,6 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_env_value('DJANGO_SECRET_KEY', 'django-insecure-u^#h%k1naj^*-ma!2(j6^-p0x20ip=85c^+i!%mbjmvbckn-qs')
+# SECURE_HSTS_SECONDS = 3600
+# SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = get_env_bool('DJANGO_DEBUG', True)
@@ -161,6 +167,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+STATIC_ROOT = "/var/www/static"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -266,9 +273,8 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 
-COMPRESS_ROOT = BASE_DIR / 'static/compressor'
-COMPRESS_ENABLED = True
-# COMPRESS_OFFLINE = True
+COMPRESS_ENABLED = False
+COMPRESS_OFFLINE = True
 COMPRESS_CSS_FILTERS = [
     # creates absolute urls from relative ones
     'compressor.filters.css_default.CssAbsoluteFilter',
@@ -326,7 +332,7 @@ LOGOUT_REDIRECT_URL = '/'
 
 # blog 配置
 # haystack 配置
-scheme = 'http'
+scheme = 'https'
 if get_env_value('ELASTICSEARCH_HOST', False) and get_env_value('ELASTICSEARCH_PORT', False):
     HAYSTACK_CONNECTIONS = {
         'default': {
@@ -334,18 +340,24 @@ if get_env_value('ELASTICSEARCH_HOST', False) and get_env_value('ELASTICSEARCH_P
             'URL': scheme + '://' + get_env_value('ELASTICSEARCH_HOST', 'localhost') + ':' + get_env_value(
                 'ELASTICSEARCH_PORT', '9200') + '/',
             'INDEX_NAME': 'blog_index',
+            'KWARGS': {
+                'http_auth': (get_env_value('ELASTICSEARCH_USER', 'elastic'), get_env_value('ELASTICSEARCH_PASSWORD', '123456')),  # Replace with your credentials
+            },
         },
     }
-    # 'http://' +
+
     ELASTICSEARCH_DSL = {
         'default': {
             'hosts': [{
-                'scheme': 'http',
+                'scheme': 'https',
                 'host': get_env_value('ELASTICSEARCH_HOST', 'localhost'),
                 'port': int(get_env_value('ELASTICSEARCH_PORT', 9200)),
             }],
-            'timeout': 30,
-        }
+            'timeout': 30
+        },
+        'username': get_env_value('ELASTICSEARCH_USER', 'elastic'),
+        'password': get_env_value('ELASTICSEARCH_PASSWORD', '123456'),
+        'ca_certs': get_env_value('ELASTICSEARCH_CA', '/etc/elasticsearch/certs/http_ca.crt')
     }
 else:
     HAYSTACK_CONNECTIONS = {

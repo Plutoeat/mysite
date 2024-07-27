@@ -11,15 +11,20 @@
 
 ## 更新日志
 
+2024年07月27日
+
+手动部署上线
+
 2024年07月23日
 
 网站主体功能完成
 
-## 资源下载
+## 手动安装
 
-网站暂不提供下载内容
+依赖 mysql8.0, redis, elasticsearch8.12.2, [analysis-ik](https://github.com/infinilabs/analysis-ik), gunicorn, nginx
 
-## 隐私政策
+将 `collectstatic` 文件夹中文件移动到 `/var/www/static`
 
+网上有许多教程不再赘述
 
-
+docker 部署方案与 [DjangoBlog](https://github.com/liangliangyy/DjangoBlog) 项目类似，可参考其部署方法

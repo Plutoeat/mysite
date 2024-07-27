@@ -1,1 +1,0 @@
-window.addEventListener('DOMContentLoaded',function(){const csrfToken=document.querySelector('input[name="csrfmiddlewaretoken"]').value;function logout(){fetch("{% url 'accounts:forget_password_code' %}",{method:"POST",headers:{'Content-Type':'application/x-www-form-urlencoded','X-CSRFToken':csrfToken}}).then();}});

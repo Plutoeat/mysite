@@ -26,6 +26,8 @@ django-ipware = "^7.0.1"
 requests = "^2.32.2"
 pygments = "^2.18.0"
 markdown-katex = "^202406.1035"
+pillow = "^10.4.0"
+redis = "^5.0.7"
 
 
 [build-system]
