@@ -19,12 +19,18 @@
 
 网站主体功能完成
 
-## 手动安装
+## 手动部署
+
+在 `./mysite/settings/py` 中 ALLOWED_HOSTS, CSRF_TRUSTED_ORIGINS 添加自己的 IP, 或者域名(**docker 部署也需要修改**)
 
 依赖 mysql8.0, redis, elasticsearch8.12.2, [analysis-ik](https://github.com/infinilabs/analysis-ik), gunicorn, nginx
 
-将 `collectstatic` 文件夹中文件移动到 `/var/www/static`
+注意静态文件收集在 `/var/www/static`
 
 网上有许多教程不再赘述
 
+## docker 部署
+
 docker 部署方案与 [DjangoBlog](https://github.com/liangliangyy/DjangoBlog) 项目类似，可参考其部署方法
+
+添加域名，ssl证书请自行修改 `./bin/nginx.conf`

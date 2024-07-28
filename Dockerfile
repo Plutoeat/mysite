@@ -6,7 +6,7 @@ RUN apt-get update && apt-get upgrade && apt-get install gcc libssl-dev pkg-conf
 RUN pip install --upgrade pip && \
     pip install poetry
 
-WORKDIR /app
+WORKDIR /mysite
 
 COPY pyproject.toml poetry.lock ./
 
@@ -19,8 +19,14 @@ COPY . .
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+RUN python manage.py makemigrations && \
+    python manage.py migrate && \
+    python manage.py collectstatic --noinput && \
+    python manage.py compress --force && \
+    python manage.py build_index --skip-checks
+
 # EXPOSE 8000
 
-RUN chmod +x /app/bin/docker_start.sh
+RUN chmod +x /mysite/bin/docker_start.sh
 
-ENTRYPOINT [ "/app/bin/docker_start.sh" ]
+ENTRYPOINT [ "/mysite/bin/docker_start.sh" ]

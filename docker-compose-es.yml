@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   es:
@@ -15,6 +15,7 @@ services:
       - 9200:9200
     volumes:
       - ./bin/datas/es/:/usr/share/elasticsearch/data/
+      - /etc/elasticsearch/certs/http_ca.crt:/etc/elasticsearch/certs/http_ca.crt
     entrypoint: >
       sh -c "echo -e '-*-\n-*-\n' | elasticsearch-keystore create &&
       bin/elasticsearch-plugin remove x-pack --purge &&
@@ -32,28 +33,30 @@ services:
     environment:
       - ELASTICSEARCH_HOSTS=https://es:9200
 
-  xblog:
+  mysite:
     build: .
     restart: always
-    command: bash -c 'sh /app/bin/docker_start.sh'
+    command: bash -c 'sh /mysite/bin/docker_start.sh'
     ports:
       - "8000:8000"
     volumes:
-      - ./collectstatic:/app/collectstatic
-      - ./uploads:/app/uploads
+      - /var/www/static:/var/www/static
+      - .:/mysite
+      - /etc/elasticsearch/certs/http_ca.crt:/etc/elasticsearch/certs/http_ca.crt
     environment:
-      - DJANGO_DEBUG=False
-      - MYSQL_DATABASE=xblog
-      - MYSQL_USER_NAME=root
-      - MYSQL_PASSWORD=XBlOg!2!a@d#E
-      - MYSQL_HOST=db
-      - MYSQL_PORT=3306
-      - REDIS_URL=redis:6379
-      - ELASTICSEARCH_HOST=es:9200
+      DJANGO_DEBUG: False
+      MYSQL_DATABASE: xblog
+      MYSQL_USER_NAME: myuser
+      MYSQL_PASSWORD: mypassword
+      MYSQL_ROOT_PASSWORD: XBlOg!2!a@d#E
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      REDIS_URL: redis:6379
+      ELASTICSEARCH_HOST: es
+      ELASTICSEARCH_PORT: 9200
     links:
       - db
       - redis
     depends_on:
       - db
-    container_name: xblog
-
+    container_name: mysite
