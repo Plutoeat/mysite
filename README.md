@@ -57,6 +57,6 @@ depends_on:
 
 ```shell
 chown -R 1000:1000 /usr/share/elasticsearch/data
-docker-compose -f docker-compose-es.yml build
-docker-compose -f docker-compose-es.yml up -d
+docker-compose -f docker-compose.yml -f docker-compose-es.yml build
+docker-compose -f docker-compose.yml docker-compose-es.yml up -d
 ```
