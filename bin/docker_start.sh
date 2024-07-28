@@ -18,6 +18,7 @@ export PYTHONPATH=$DJANGODIR:$PYTHONPATH
 #pip install -Ur requirements.txt -i http://pypi.douban.com/simple/  --trusted-host pypi.douban.com && \
 #        pip install gunicorn  -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
 # Start your Django Unicorn
+python manage.py migrate && python manage.py collectstatic --noinput && python manage.py compress --force && python manage.py build_index --skip-checks
 # Programs meant to be run under supervisor should not daemonize themselves (do not use --daemon)
 exec gunicorn ${DJANGO_WSGI_MODULE}:application \
 --name $NAME \
