@@ -52,7 +52,7 @@ services:
       - ./bin/nginx.conf:/etc/nginx/nginx.conf
       - /var/www/static:/var/www/static
     links:
-      - xblog:xblog
+      - mysite:mysite
     container_name: nginx
 
   redis:

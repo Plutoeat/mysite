@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-NAME="xblog" # Name of the application
+NAME="mysite" # Name of the application
 DJANGODIR=/mysite # Django project directory
 USER=root # the user to run as
 GROUP=root # the group to run as
