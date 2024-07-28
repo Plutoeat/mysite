@@ -1,6 +1,8 @@
 bin/data/
 # virtualenv
 venv/
+migrations/
+!migrations/__init__.py
 mysite/whoosh_index/
 media/
 settings_production.py
