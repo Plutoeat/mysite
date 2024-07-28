@@ -35,4 +35,4 @@
 
 # 项目地址 {: project }
 
-[xblog](https://github.com/Plutoeat/xblog)
+[xblog](https://github.com/Plutoeat/mysite)
