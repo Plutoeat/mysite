@@ -257,7 +257,7 @@ LOGGING = {
 }
 
 # 密码哈希方式
-PASSWORD_HASHERS = ["django.contrib.auth.hashers.BCryptPasswordHasher",]
+PASSWORD_HASHERS = ["django.contrib.auth.hashers.BCryptPasswordHasher", ]
 
 # 启用站点框架
 SITE_ID = 1
@@ -333,7 +333,14 @@ LOGOUT_REDIRECT_URL = '/'
 
 # blog 配置
 # haystack 配置
-scheme = 'https'
+
+if get_env_value('ELASTICSEARCH_USER', False) and get_env_value('ELASTICSEARCH_PASSWORD', False) and get_env_value(
+        'ELASTICSEARCH_CA', False):
+    scheme = 'http'
+    security = False
+else:
+    scheme = 'https'
+    security = True
 if get_env_value('ELASTICSEARCH_HOST', False) and get_env_value('ELASTICSEARCH_PORT', False):
     HAYSTACK_CONNECTIONS = {
         'default': {
@@ -341,21 +348,24 @@ if get_env_value('ELASTICSEARCH_HOST', False) and get_env_value('ELASTICSEARCH_P
             'URL': scheme + '://' + get_env_value('ELASTICSEARCH_HOST', 'localhost') + ':' + get_env_value(
                 'ELASTICSEARCH_PORT', '9200') + '/',
             'INDEX_NAME': 'blog_index',
-            'KWARGS': {
-                'http_auth': (get_env_value('ELASTICSEARCH_USER', 'elastic'), get_env_value('ELASTICSEARCH_PASSWORD', '123456')),  # Replace with your credentials
-            },
         },
     }
+    if security:
+        HAYSTACK_CONNECTIONS['default']['KWARGS'] = {
+            'http_auth': (
+                get_env_value('ELASTICSEARCH_USER', 'elastic'), get_env_value('ELASTICSEARCH_PASSWORD', '123456')),
+        }
 
     ELASTICSEARCH_DSL = {
         'default': {
             'hosts': [{
-                'scheme': 'https',
+                'scheme': scheme,
                 'host': get_env_value('ELASTICSEARCH_HOST', 'localhost'),
                 'port': int(get_env_value('ELASTICSEARCH_PORT', 9200)),
             }],
             'timeout': 30
         },
+        'security': security,
         'username': get_env_value('ELASTICSEARCH_USER', 'elastic'),
         'password': get_env_value('ELASTICSEARCH_PASSWORD', '123456'),
         'ca_certs': get_env_value('ELASTICSEARCH_CA', '/etc/elasticsearch/certs/http_ca.crt')

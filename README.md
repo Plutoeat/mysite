@@ -41,19 +41,22 @@ docker 部署方案与 [DjangoBlog](https://github.com/liangliangyy/DjangoBlog) 
 
 添加域名，ssl证书请自行修改 `./bin/nginx.conf`
 
-使用 es 请先启动 es 并设置密码， [设置方法](https://github.com/lanlin/notes/issues/112)
+使用 es 版
 
-```shell
-docker-compose -f docker-compose-es.yml build
-docker-compose -f docker-compose-es.yml up -d
-```
+使用 https 和设置密码请自行研究
 
->在 `docker-compose.yml` 文件中 `mysite.environment`中添加以下内容
+>在 `docker-compose.yml` 文件中 `mysite`中添加以下内容
 
 ```yaml
-ELASTICSEARCH_HOST: es
-ELASTICSEARCH_PORT: 9200
-ELASTICSEARCH_USER: elastic
-ELASTICSEARCH_PASSWORD: 123456
-ELASTICSEARCH_CA: /etc/elasticsearch/certs/http_ca.crt
+environment:
+  ELASTICSEARCH_HOST: es
+  ELASTICSEARCH_PORT: 9200
+depends_on:
+      - es
+```
+
+```shell
+chown -R 1000:1000 /usr/share/elasticsearch/data
+docker-compose -f docker-compose-es.yml build
+docker-compose -f docker-compose-es.yml up -d
 ```
