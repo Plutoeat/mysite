@@ -16,11 +16,15 @@ RUN poetry config virtualenvs.create false && \
 
 COPY . .
 
-RUN python manage.py makemigrations && \
-    python manage.py migrate && \
-    python manage.py collectstatic --noinput && \
-    python manage.py compress --force && \
-    python manage.py build_index --skip-checks
+RUN python manage.py makemigrations \
+
+RUN python manage.py migrate \
+
+RUN python manage.py collectstatic --noinput
+
+RUN python manage.py compress --force \
+
+RUN python manage.py build_index --skip-checks
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
