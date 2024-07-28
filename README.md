@@ -31,6 +31,12 @@
 
 ## docker 部署
 
+如 docker_start.sh 无权限，请在 docker 环境外也赋予权限
+
+```sh
+chmod +x ./bin/docker_start.sh
+```
+
 docker 部署方案与 [DjangoBlog](https://github.com/liangliangyy/DjangoBlog) 项目类似，可参考其部署方法
 
 添加域名，ssl证书请自行修改 `./bin/nginx.conf`

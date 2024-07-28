@@ -170,5 +170,3 @@ cython_debug/
 ui/
 logs/
 media/
-migrations/
-!migrations/__init__.py
