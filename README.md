@@ -33,10 +33,27 @@
 
 如 docker_start.sh 无权限，请在 docker 环境外也赋予权限
 
-```sh
+```shell
 chmod +x ./bin/docker_start.sh
 ```
 
 docker 部署方案与 [DjangoBlog](https://github.com/liangliangyy/DjangoBlog) 项目类似，可参考其部署方法
 
 添加域名，ssl证书请自行修改 `./bin/nginx.conf`
+
+使用 es 请先启动 es 并设置密码， [设置方法](https://github.com/lanlin/notes/issues/112)
+
+```shell
+docker-compose -f docker-compose-es.yml build
+docker-compose -f docker-compose-es.yml up -d
+```
+
+>在 `docker-compose.yml` 文件中 `mysite.environment`中添加以下内容
+
+```yaml
+ELASTICSEARCH_HOST: es
+ELASTICSEARCH_PORT: 9200
+ELASTICSEARCH_USER: elastic
+ELASTICSEARCH_PASSWORD: 123456
+ELASTICSEARCH_CA: /etc/elasticsearch/certs/http_ca.crt
+```

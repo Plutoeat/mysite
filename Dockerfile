@@ -16,9 +16,11 @@ RUN poetry config virtualenvs.create false && \
 
 COPY . .
 
-RUN python manage.py makemigrations
+RUN python manage.py makemigrations && \
+    python manage.py migrate
 
 ENV PYTHONDONTWRITEBYTECODE 1
+
 ENV PYTHONUNBUFFERED 1
 
 # EXPOSE 8000
