@@ -336,11 +336,11 @@ LOGOUT_REDIRECT_URL = '/'
 
 if get_env_value('ELASTICSEARCH_USER', False) and get_env_value('ELASTICSEARCH_PASSWORD', False) and get_env_value(
         'ELASTICSEARCH_CA', False):
-    scheme = 'http'
-    security = False
-else:
     scheme = 'https'
     security = True
+else:
+    scheme = 'http'
+    security = False
 if get_env_value('ELASTICSEARCH_HOST', False) and get_env_value('ELASTICSEARCH_PORT', False):
     HAYSTACK_CONNECTIONS = {
         'default': {
