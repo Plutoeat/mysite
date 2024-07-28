@@ -21,6 +21,6 @@ ENV PYTHONUNBUFFERED 1
 
 # EXPOSE 8000
 
-RUN chmod 777 /mysite/bin/docker_start.sh
+RUN chmod +x /mysite/bin/docker_start.sh
 
 ENTRYPOINT [ "/mysite/bin/docker_start.sh" ]
