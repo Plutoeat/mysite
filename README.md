@@ -25,6 +25,8 @@ docker 部署完成
 
 ## 手动部署
 
+django 5.0 与旧 haystack 有些不适配，最好使用项目中的 haystack
+
 在 `./mysite/settings/py` 中 ALLOWED_HOSTS, CSRF_TRUSTED_ORIGINS 添加自己的 IP, 或者域名(**docker 部署也需要修改**)
 
 依赖 mysql8.0, redis, elasticsearch8.12.2, [analysis-ik](https://github.com/infinilabs/analysis-ik), gunicorn, nginx
