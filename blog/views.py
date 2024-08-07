@@ -244,7 +244,6 @@ class ArticleDetailView(DetailView):
     """
     文章详情页
     """
-    template_name = 'blog/article_detail.html'
     model = Article
     context_object_name = 'article'
     link_type = LinkShowType.PAGE
@@ -296,10 +295,13 @@ class ArticleDetailView(DetailView):
         kwargs['link_type'] = self.link_type
         return super(ArticleDetailView, self).get_context_data(**kwargs)
 
-    def dispatch(self, request, *args, **kwargs):
-        super(ArticleDetailView, self).dispatch(request, *args, **kwargs)
-        if self.object.type == 'page':
-            return render(self.request, 'blog/article_detail_page.html', {'article': self.object})
+    def get_template_names(self):
+        obj = self.get_object()
+        if obj.type == 'page':
+            template_name = 'blog/article_detail_page.html'
+        else:
+            template_name = 'blog/article_detail.html'
+        return [template_name]
 
 
 class ArchivesView(ArticleListView):

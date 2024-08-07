@@ -264,7 +264,8 @@ SITE_ID = 1
 
 # 配置媒体文件
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = '/var/www/media'
 
 # DJANGO-COMPRESSOR 配置
 STATICFILES_FINDERS = (
