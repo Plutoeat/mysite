@@ -90,6 +90,9 @@ class ArticleListView(generic.ListView):
         # 判断活跃界面
         if self.request.path == '/':
             kwargs['active_page'] = 'home'
+            self.breadcrumbs = [
+                ('首页', '/'),
+            ]
         else:
             kwargs['active_page'] = self.request.path
         breadcrumbs = self.breadcrumbs
@@ -174,6 +177,9 @@ class CategoryDetailView(ArticleListView):
         if len(self.breadcrumbs) < 2:
             self.breadcrumbs.append((category_name, reverse('blog:category_detail',
                                                             kwargs={'category_name': self.kwargs['category_name']})))
+        elif len(self.breadcrumbs) >= 2:
+            if self.breadcrumbs[1][0] != category_name:
+                self.breadcrumbs[1] = (category_name, reverse('blog:category_detail',kwargs={'category_name': self.kwargs['category_name']}))
         kwargs['page_type'] = CategoryDetailView.page_type
         kwargs['tag_name'] = category_name
         return super(CategoryDetailView, self).get_context_data(**kwargs)
@@ -200,6 +206,9 @@ class AuthorDetailView(ArticleListView):
         author_name = self.kwargs['author_name']
         if len(self.breadcrumbs) < 2:
             self.breadcrumbs.append((author_name, reverse('blog:author_detail', kwargs={'author_name': author_name})))
+        elif len(self.breadcrumbs) >= 2:
+            if self.breadcrumbs[1][0] != author_name:
+                self.breadcrumbs[1] = (author_name, reverse('blog:author_detail', kwargs={'author_name': author_name}))
         kwargs['page_type'] = AuthorDetailView.page_type
         kwargs['tag_name'] = author_name
         return super(AuthorDetailView, self).get_context_data(**kwargs)
@@ -235,6 +244,9 @@ class TagDetailView(ArticleListView):
         if len(self.breadcrumbs) < 2:
             self.breadcrumbs.append(
                 (tag_name, reverse('blog:tag_detail', kwargs={'tag_name': self.kwargs['tag_name']})))
+        elif len(self.breadcrumbs) >= 2:
+            if self.breadcrumbs[1][0] != tag_name:
+                self.breadcrumbs[1] = (tag_name, reverse('blog:tag_detail', kwargs={'tag_name': self.kwargs['tag_name']}))
         kwargs['page_type'] = TagDetailView.page_type
         kwargs['tag_name'] = tag_name
         return super(TagDetailView, self).get_context_data(**kwargs)
@@ -281,9 +293,10 @@ class ArticleDetailView(DetailView):
         previous_page = p_comments.previous_page_number() if p_comments.has_previous() else None
 
         if next_page:
-            kwargs['comment_next_page_url'] = self.object.get_absolute_url()+f'?comment_page={next_page}#comments'
+            kwargs['comment_next_page_url'] = self.object.get_absolute_url() + f'?comment_page={next_page}#comments'
         if previous_page:
-            kwargs['comment_previous_page_url'] = self.object.get_absolute_url()+f'?comment_page={previous_page}#comments'
+            kwargs[
+                'comment_previous_page_url'] = self.object.get_absolute_url() + f'?comment_page={previous_page}#comments'
 
         kwargs['form'] = comment_form
         kwargs['article_comments'] = article_comments
@@ -331,7 +344,10 @@ class LinkListView(generic.ListView):
     """
     model = Links
     template_name = 'blog/links.html'
-    extra_context = {'form': LinksForm}
+    extra_context = {
+        'form': LinksForm,
+        'breadcrumbs': [('首页', '/'), ('友情链接', None)]
+    }
 
     def get_queryset(self):
         return Links.objects.filter(is_enable=True)
@@ -382,6 +398,11 @@ class MySearchView(SearchView):
             "page": page,
             "paginator": paginator,
             "suggestion": None,
+            "breadcrumbs": [
+                ('首页', '/'),
+                ('搜素', None),
+                (self.query, None)
+            ]
         }
         if hasattr(self.results, "query") and self.results.query.backend.include_spelling:
             context["suggestion"] = self.results.query.get_spelling_suggestion()

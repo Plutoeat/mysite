@@ -3,9 +3,7 @@
 <footer class="w-full bg-neutral-100 dark:bg-neutral-900 py-32" lang="zh-CN" role="contentinfo" aria-labelledby="x-gf-label">
     <h2 id="x-gf-label" class="hidden">XBlog Footer</h2>
     <section class="container mx-auto px-4 sm:px-0">
-        {% cache 36000 breadcrumb request.path %}
-            {% load_breadcrumb breadcrumbs %}
-        {% endcache %}
+        {% load_breadcrumb breadcrumbs %}
     </section>
     <section class="container mx-auto px-4 sm:px-0">
         <nav class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 my-10" role="navigation" aria-label="网站目录">
