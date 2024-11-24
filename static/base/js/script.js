@@ -9,18 +9,21 @@ document.addEventListener("DOMContentLoaded", function () {
             const controlId = navbarCollapseBtn.getAttribute('data-x-collapse');
             const controlElement = document.querySelector(controlId);
             const otherControlElement = document.querySelectorAll('.x-collapse.collapse-active');
-
-            // 所有icon样式复原
-            navbarCollapseBtns.forEach(navbarCollapseBtn => {
-                for (let i = 0; i < navbarCollapseBtn.querySelectorAll('.material-symbols-outlined.x-collapse-icon').length; i++) {
+            let flag = true;
+            // 除了点击icon其他icon样式复原
+            navbarCollapseBtns.forEach(reNavbarCollapseBtn => {
+                for (let i = 0; i < reNavbarCollapseBtn.querySelectorAll('.material-symbols-outlined.x-collapse-icon').length; i++) {
                     if (i === 0) {
-                        if (navbarCollapseBtn.querySelectorAll('.material-symbols-outlined.x-collapse-icon')[i].classList.contains('hidden')) {
-                            navbarCollapseBtn.querySelectorAll('.material-symbols-outlined.x-collapse-icon')[i].classList.remove('hidden');
+                        if (reNavbarCollapseBtn.querySelectorAll('.material-symbols-outlined.x-collapse-icon')[i].classList.contains('hidden')) {
+                            reNavbarCollapseBtn.querySelectorAll('.material-symbols-outlined.x-collapse-icon')[i].classList.remove('hidden');
+                            flag = false;
+                        } else {
+                            flag = true;
                         }
                     }
                     if (i === 1) {
-                        if (!navbarCollapseBtn.querySelectorAll('.material-symbols-outlined.x-collapse-icon')[i].classList.contains('hidden')) {
-                            navbarCollapseBtn.querySelectorAll('.material-symbols-outlined.x-collapse-icon')[i].classList.add('hidden');
+                        if (!reNavbarCollapseBtn.querySelectorAll('.material-symbols-outlined.x-collapse-icon')[i].classList.contains('hidden')) {
+                            reNavbarCollapseBtn.querySelectorAll('.material-symbols-outlined.x-collapse-icon')[i].classList.add('hidden');
                         }
                     }
                 }
@@ -35,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // icon 切换
             controlIcons.forEach(controlIcon => {
-                if (controlIcon.classList.contains('material-symbols-outlined') && controlIcon.classList.contains('x-collapse-icon')) {
+                if (controlIcon.classList.contains('material-symbols-outlined') && controlIcon.classList.contains('x-collapse-icon') && flag) {
                     controlIcon.classList.toggle('hidden');
                 }
             });
@@ -87,7 +90,7 @@ function initTheme() {
 function selectTheme() {
     if (localStorage.theme === 'light') {
         localStorage.theme = 'dark';
-    } else if(localStorage.theme === 'dark') {
+    } else if (localStorage.theme === 'dark') {
         localStorage.theme = 'light';
     } else {
         localStorage.theme = 'light';
