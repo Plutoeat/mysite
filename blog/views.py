@@ -260,6 +260,10 @@ class ArticleDetailView(DetailView):
     context_object_name = 'article'
     link_type = LinkShowType.PAGE
 
+    def get_queryset(self):
+        queryset = super(ArticleDetailView, self).get_queryset()
+        return queryset.filter(status='publish')
+
     def get_object(self, queryset=None):
         obj = super(ArticleDetailView, self).get_object(queryset)
         obj.viewed()
