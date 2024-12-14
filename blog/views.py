@@ -302,6 +302,10 @@ class ArticleDetailView(DetailView):
             kwargs[
                 'comment_previous_page_url'] = self.object.get_absolute_url() + f'?comment_page={previous_page}#comments'
 
+        # 获取文章后台地址
+        info = (self.object._meta.app_label, self.object._meta.model_name)
+        admin_link = reverse('admin:%s_%s_change' % info, args=(self.object.id,))
+
         kwargs['form'] = comment_form
         kwargs['article_comments'] = article_comments
         kwargs['p_comments'] = p_comments
@@ -310,6 +314,7 @@ class ArticleDetailView(DetailView):
         kwargs['previous_article'] = self.object.previous_article
         kwargs['breadcrumbs'] = breadcrumbs
         kwargs['link_type'] = self.link_type
+        kwargs['admin_link'] = admin_link
         return super(ArticleDetailView, self).get_context_data(**kwargs)
 
     def get_template_names(self):
