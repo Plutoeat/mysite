@@ -170,3 +170,4 @@ cython_debug/
 ui/
 logs/
 media/
+old_settings/
